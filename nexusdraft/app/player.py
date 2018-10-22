@@ -32,7 +32,8 @@ def get_player_profile(player_str, region=1):
 
 
 def get_friends():
-    os.system("touch ../data/friends.bin")
+    with open("../data/friends.bin", "a"):
+        pass
     with open("../data/friends.bin", "rb") as file:
         data = file.read()
         buffer = []
