@@ -1,6 +1,5 @@
 import csv
-import hotslogs.rawexport.update as dir
-from hotslogs.rawexport import replaydata
+from nexusdraft.hotslogs.rawexport import replaydata
 
 
 def read_hero_list(file_name):

@@ -1,6 +1,6 @@
 import urllib.request
 import urllib.parse
-import hotslogs.api as api
+import nexusdraft.hotslogs.api as api
 from html.parser import HTMLParser
 
 

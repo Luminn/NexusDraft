@@ -1,17 +1,21 @@
 from tkinter import *
 from tkinter.ttk import *
 import tkinter.font as tkFont
-from hotslogs.rawexport.csvreader import read_hero_list, read_map_list
-from draft.draft import HotSDraft
-import draft.ranking as Score
-import hotslogs.rawexport.update as RawUpdate
-from hotslogs.rawexport.countertableloader import CounterTableGenerator
-from app.player import get_player_profile, FriendManager, PlayerBox
-from app.settings import SettingsManager
+from nexusdraft.hotslogs.rawexport.csvreader import read_hero_list, read_map_list
+from nexusdraft.draft.draft import HotSDraft
+import nexusdraft.draft.ranking as Score
+import nexusdraft.hotslogs.rawexport.update as update
+from nexusdraft.hotslogs.rawexport.countertableloader import CounterTableGenerator
+from nexusdraft.app.player import get_player_profile, FriendManager, PlayerBox
+from nexusdraft.app.settings import SettingsManager
 import threading
 
-hero_list = sorted([i[1] for i in read_hero_list("data/HeroIDAndMapID.csv")])
-map_list = sorted([i[1] for i in read_map_list("data/HeroIDAndMapID.csv")])
+try:
+    hero_list = sorted([i[1] for i in read_hero_list("../data/hero_map.csv")])
+    map_list = sorted([i[1] for i in read_map_list("../data/hero_map.csv")])
+except FileNotFoundError:
+    hero_list = []
+    map_list = []
 ctg = CounterTableGenerator()
 
 
@@ -303,10 +307,11 @@ class MainWindow(Tk):
 
     def update_thread(self):
         self.update_button.configure(text="Updating", command=None)
-        RawUpdate.download()
-        RawUpdate.unzip()
+        update.download()
+        update.unzip()
         ctg.generate_counter_lists()
         ctg.export_counter_score()
+        update.clear()
         self.update_button.configure(text="Update Data", command=self.update)
 
     def update(self):

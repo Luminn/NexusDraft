@@ -1,5 +1,5 @@
 import csv
-from hotslogs.rawexport import csvreader
+from nexusdraft.hotslogs.rawexport import csvreader
 
 
 class CounterTableGenerator:
@@ -8,10 +8,10 @@ class CounterTableGenerator:
         pass
 
     def _init(self):
-        self.hero_list = csvreader.read_hero_list("data/HeroIDAndMapID.csv")
+        self.hero_list = csvreader.read_hero_list("../data/HeroIDAndMapID.csv")
         self.hero_dict = {i[0]: i[1] for i in self.hero_list}
         self.hero_list = list(sorted(map(lambda x: x[1], self.hero_list)))
-        self.map_list = csvreader.read_map_list("data/HeroIDAndMapID.csv")
+        self.map_list = csvreader.read_map_list("../data/HeroIDAndMapID.csv")
         self.map_dict = {i[0]: i[1] for i in self.map_list}
         self.map_list = list(sorted(map(lambda x: x[1], self.map_list)))
         self.winrate_list = {i: [0, 0] for i in self.hero_list}
@@ -26,8 +26,8 @@ class CounterTableGenerator:
 
     def generate_counter_lists(self, gamemode_filter=(4, 5, 6), mmr_floor=0, mmr_ceiling=0):
         self._init()
-        chara_csv_file = open("data/ReplayCharacters.csv", "r")
-        replay_csv_file = open("data/Replays.csv", "r")
+        chara_csv_file = open("../data/ReplayCharacters.csv", "r")
+        replay_csv_file = open("../data/Replays.csv", "r")
         chara_reader = csv.reader(chara_csv_file, delimiter=",")
         replay_reader = csv.reader(replay_csv_file, delimiter=",")
         next(chara_reader, None)
@@ -81,25 +81,25 @@ class CounterTableGenerator:
 
         colon_format = lambda x: "{}:{}".format(x[0], x[1])
 
-        with open("data/hero.csv", "w") as file:
+        with open("../data/hero.csv", "w") as file:
             writer = csv.writer(file, delimiter=",")
             writer.writerow(winrate_header)
             for i in range(len(self.hero_list)):
                 writer.writerow([self.hero_list[i]] + wrlist[i])
 
-        with open("data/map.csv", "w") as file:
+        with open("../data/map.csv", "w") as file:
             writer = csv.writer(file, delimiter=",")
             writer.writerow(map_header)
             for i in range(len(self.hero_list)):
                 writer.writerow([self.hero_list[i]] + [colon_format(x) for x in maplist[i]])
 
-        with open("data/duo.csv", "w") as file:
+        with open("../data/duo.csv", "w") as file:
             writer = csv.writer(file, delimiter=",")
             writer.writerow(hero_header)
             for i in range(len(self.hero_list)):
                 writer.writerow([self.hero_list[i]] + [colon_format(x) for x in duolist[i]])
 
-        with open("data/counter.csv", "w") as file:
+        with open("../data/counter.csv", "w") as file:
             writer = csv.writer(file, delimiter=",")
             writer.writerow(hero_header)
             for i in range(len(self.hero_list)):

@@ -1,5 +1,5 @@
-import draft.calc as calc
-import hotslogs.rawexport.countertable as ct
+import nexusdraft.draft.calc as calc
+import nexusdraft.hotslogs.rawexport.countertable as ct
 
 
 hero_list = {}
@@ -11,14 +11,16 @@ map_list = {}
 
 def init():
     global hero_list, main_list, duo_list, counter_list, map_list
-    main_list = ct.conv_main_winrate_table(ct.read_main_table("data/hero.csv"))
+    main_list = ct.conv_main_winrate_table(ct.read_main_table("../data/hero.csv"))
     hero_list = sorted([i for i in main_list])
-    duo_list = ct.conv_matchup_winrate_table(ct.read_matchup_table("data/duo.csv"))
-    counter_list = ct.conv_matchup_winrate_table(ct.read_matchup_table("data/counter.csv"))
-    map_list = ct.conv_matchup_winrate_table(ct.read_matchup_table("data/map.csv"))
+    duo_list = ct.conv_matchup_winrate_table(ct.read_matchup_table("../data/duo.csv"))
+    counter_list = ct.conv_matchup_winrate_table(ct.read_matchup_table("../data/counter.csv"))
+    map_list = ct.conv_matchup_winrate_table(ct.read_matchup_table("../data/map.csv"))
 
-
-init()
+try:
+    init()
+except FileNotFoundError:
+    pass
 
 UNIFORM_PLAYER_PROFILE = {i: [1 / len(hero_list), 0.5] for i in hero_list}
 

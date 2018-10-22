@@ -1,5 +1,4 @@
 import csv
-import hotslogs.rawexport.update as dir
 
 eps = 0.000000000000001
 

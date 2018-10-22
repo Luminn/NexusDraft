@@ -2,7 +2,7 @@ import os
 from tkinter import *
 from tkinter.ttk import *
 import tkinter.font as tkFont
-from hotslogs.crawler import get_personal_hero_table
+from nexusdraft.hotslogs.crawler import get_personal_hero_table
 
 
 def process_player_str(player_str):
@@ -32,8 +32,8 @@ def get_player_profile(player_str, region=1):
 
 
 def get_friends():
-    os.system("touch data/friends.bin")
-    with open("data/friends.bin", "rb") as file:
+    os.system("touch ../data/friends.bin")
+    with open("../data/friends.bin", "rb") as file:
         data = file.read()
         buffer = []
         for i in data:
@@ -42,7 +42,7 @@ def get_friends():
 
 
 def set_friends(friends):
-    with open("data/friends.bin", "wb") as file:
+    with open("../data/friends.bin", "wb") as file:
         string = ""
         buffer = []
         for i in friends:
@@ -56,7 +56,10 @@ def set_friends(friends):
 class FriendManager:
     def __init__(self):
         self.delegates = []
-        self.friends = get_friends()
+        try:
+            self.friends = get_friends()
+        except FileNotFoundError:
+            self.friends = []
 
     def spawn_friends_window(self):
         FriendsWindow(self).mainloop()
