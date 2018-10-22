@@ -7,7 +7,7 @@ import os
 
 
 class Slider(Frame):
-
+    """A Tk Scale widget that shows it's value."""
     def __init__(self, master, delegate=None):
         Frame.__init__(self, master)
         self.delegate = delegate
@@ -33,7 +33,7 @@ class Slider(Frame):
 
 
 class SettingsManager:
-
+    """Manage the settings and spawn SettingsWindows."""
     def __init__(self):
         os.system("touch ../data/settings.json")
         self.data_table = {}
@@ -75,7 +75,7 @@ class SettingsManager:
 
 
 class SettingsWindow(Tk):
-
+    """A window that allows the user to change the settings of this program."""
     def __init__(self, manager):
         Tk.__init__(self)
         self.manager = manager
@@ -122,6 +122,7 @@ class SettingsWindow(Tk):
         self.manager.set("grade_model", self.grade_model.get())
 
     def on_reset(self):
+        """Reset the settings"""
         self.manager.reset()
         self.destroy()
         self.manager.spawn_window()

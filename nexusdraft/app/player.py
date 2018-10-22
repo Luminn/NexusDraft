@@ -6,6 +6,7 @@ from nexusdraft.hotslogs.crawler import get_personal_hero_table
 
 
 def process_player_str(player_str):
+    """Get the Battle Tag, number and Role from a player string"""
     if "\\" in player_str:
         temp = player_str.split("\\")
         player_str = temp[0]
@@ -17,6 +18,7 @@ def process_player_str(player_str):
 
 
 def conv_player_profile(profile):
+    """Convert the player profile from Hotslogs into percentage data"""
     sum = 0.0
     for i in profile:
         sum += profile[i][0]
@@ -24,6 +26,7 @@ def conv_player_profile(profile):
 
 
 def get_player_profile(player_str, region=1):
+    """Get player profile from hotslogs.com"""
     if player_str == "":
         return None
     tag, num, _ = process_player_str(player_str)
@@ -32,6 +35,7 @@ def get_player_profile(player_str, region=1):
 
 
 def get_friends():
+    """Load saved players from file friends.bin"""
     with open("../data/friends.bin", "a"):
         pass
     with open("../data/friends.bin", "rb") as file:
@@ -43,6 +47,7 @@ def get_friends():
 
 
 def set_friends(friends):
+    """Saved players to file friends.bin"""
     with open("../data/friends.bin", "wb") as file:
         string = ""
         buffer = []
@@ -55,6 +60,7 @@ def set_friends(friends):
 
 
 class FriendManager:
+    """Manage stored player data and spawn the "friends" window."""
     def __init__(self):
         self.delegates = []
         try:
@@ -63,9 +69,11 @@ class FriendManager:
             self.friends = []
 
     def spawn_friends_window(self):
+        """Spawn a "Friends" window."""
         FriendsWindow(self).mainloop()
 
     def list_changed(self):
+        """Notify a set of widgets about the changes in the friends list."""
         for i in self.delegates:
             i()
 
@@ -95,11 +103,13 @@ class FriendsWindow(Tk):
         remove_button.pack(side=LEFT)
 
     def load_friends(self):
+        """Reload the friends listbox"""
         self.box.delete(0, END)
         for i in self.friends:
             self.box.insert(END, i)
 
     def remove_friend(self, id):
+        """Delete a friend"""
         if id not in self.friends:
             return
         self.friends.remove(id)
@@ -109,6 +119,7 @@ class FriendsWindow(Tk):
         self.manager.list_changed()
 
     def add_friend(self, id):
+        """Add a friend"""
         if id in self.friends or id.find("#") == -1:
             return
         self.friends.append(id)
@@ -122,12 +133,14 @@ role_list = ["", "\\tank", "\\assassin", "\\support", "\\specialist"]
 
 
 class PlayerBox(Combobox):
+    """A widget that allows the users to choose from a list of stored players."""
     def __init__(self, parent, friend_manager):
         Combobox.__init__(self, parent)
         self.friends_window = friend_manager
-        self.configure(width=12, values=friend_manager.friends)
+        self.configure(width=12, values=[""] + friend_manager.friends)
         friend_manager.delegates.append(self.refresh)
 
     def refresh(self):
-        self.configure(width=12, values=self.friends_window.friends)
+        """Reload the list of friends from a friend manager"""
+        self.configure(width=12, values=[""] + self.friends_window.friends)
 

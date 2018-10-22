@@ -10,6 +10,7 @@ map_list = {}
 
 
 def init():
+    """Initialize the data needed to compute the hero ranking."""
     global hero_list, main_list, duo_list, counter_list, map_list
     main_list = ct.conv_main_winrate_table(ct.read_main_table("../data/hero.csv"))
     hero_list = sorted([i for i in main_list])
@@ -22,11 +23,9 @@ try:
 except FileNotFoundError:
     pass
 
-UNIFORM_PLAYER_PROFILE = {i: [1 / len(hero_list), 0.5] for i in hero_list}
-
 
 def hero_ranking(player_profile=None, map=None, friendly=None, enemy=None, formula="std", scale=(1, 1, 1)):
-
+    """Rank the heroes from most viable to least viable."""
     profile = {i: 0 for i in hero_list}
     if formula == "uni":
         for i in hero_list:
