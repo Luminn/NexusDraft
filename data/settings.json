@@ -1,1 +1,1 @@
-{"duo_scale": "1.00", "counter_scale": "1.00", "map_scale": "1.00", "grade_model": "std"}
+{"duo_scale": 1.0, "counter_scale": 1.0, "map_scale": 1.0, "grade_model": "std", "allow_empty_bans": true}
