@@ -32,6 +32,13 @@ class Slider(Frame):
         return self.slider.get()
 
 
+DEFAULT_SETTING = {
+    "duo_scale": 1.00, "counter_scale": 1.00, "map_scale": 1.00,
+    "grade_model": "std",
+    "allow_empty_bans": False,
+}
+
+
 class SettingsManager:
     """Manage the settings and spawn SettingsWindows."""
     def __init__(self):
@@ -53,12 +60,7 @@ class SettingsManager:
             json.dump(self.data_table, file)
 
     def get(self, item):
-        if item.isdigit():
-            return int(self.data_table[item])
-        try:
-            return float(self.data_table[item])
-        except ValueError:
-            return self.data_table[item]
+        return self.data_table[item]
 
     def set(self, key, value):
         self.data_table[key] = value
@@ -67,7 +69,7 @@ class SettingsManager:
         return lambda x, k=key: self.set(k, x)
 
     def reset(self):
-        self.data_table = {"duo_scale": "1.00", "counter_scale": "1.00", "map_scale": "1.00", "grade_model": "std"}
+        self.data_table = DEFAULT_SETTING
 
     def spawn_window(self):
         SettingsWindow(self).mainloop()

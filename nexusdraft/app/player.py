@@ -1,14 +1,13 @@
-import os
+
 from tkinter import *
 from tkinter.ttk import *
 import tkinter.font as tkFont
 from nexusdraft.hotslogs.crawler import get_personal_hero_table
 
-
 def process_player_str(player_str):
     """Get the Battle Tag, number and Role from a player string"""
-    if "\\" in player_str:
-        temp = player_str.split("\\")
+    if "/" in player_str:
+        temp = player_str.split("/")
         player_str = temp[0]
         role_str = temp[1]
     else:
@@ -17,21 +16,13 @@ def process_player_str(player_str):
     return temp[0], temp[1], role_str
 
 
-def conv_player_profile(profile):
-    """Convert the player profile from Hotslogs into percentage data"""
-    sum = 0.0
-    for i in profile:
-        sum += profile[i][0]
-    return {i: (profile[i][0] / sum, profile[i][1]) for i in profile}
-
-
 def get_player_profile(player_str, region=1):
     """Get player profile from hotslogs.com"""
     if player_str == "":
         return None
     tag, num, _ = process_player_str(player_str)
     profile = get_personal_hero_table(tag, num, region)
-    return conv_player_profile(profile)
+    return profile
 
 
 def get_friends():
@@ -62,7 +53,6 @@ def set_friends(friends):
 class FriendManager:
     """Manage stored player data and spawn the "friends" window."""
     def __init__(self):
-        self.delegates = []
         try:
             self.friends = get_friends()
         except FileNotFoundError:
@@ -71,11 +61,6 @@ class FriendManager:
     def spawn_friends_window(self):
         """Spawn a "Friends" window."""
         FriendsWindow(self).mainloop()
-
-    def list_changed(self):
-        """Notify a set of widgets about the changes in the friends list."""
-        for i in self.delegates:
-            i()
 
 
 class FriendsWindow(Tk):
@@ -129,18 +114,24 @@ class FriendsWindow(Tk):
         self.manager.list_changed()
 
 
-role_list = ["", "\\tank", "\\assassin", "\\support", "\\specialist"]
+role_list = ["tank", "melee", "ranged", "healer"]
 
 
 class PlayerBox(Combobox):
     """A widget that allows the users to choose from a list of stored players."""
     def __init__(self, parent, friend_manager):
         Combobox.__init__(self, parent)
-        self.friends_window = friend_manager
-        self.configure(width=12, values=[""] + friend_manager.friends)
-        friend_manager.delegates.append(self.refresh)
+        self.friend_manager = friend_manager
+        self.configure(width=20)
+        self.autocomplete()
+        self.bind("<Button-1>", self.autocomplete)
 
-    def refresh(self):
-        """Reload the list of friends from a friend manager"""
-        self.configure(width=12, values=[""] + self.friends_window.friends)
+    def autocomplete(self, event=None):
+        list = [""]
+        if not "/" in self.get():
+            for r in role_list:
+                list.append(self.get() + "/" + r)
+        list += self.friend_manager.friends
+        self.configure(values=list)
+
 

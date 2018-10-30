@@ -8,6 +8,7 @@ import nexusdraft.hotslogs.rawexport.update as update
 from nexusdraft.hotslogs.rawexport.countertableloader import CounterTableGenerator
 from nexusdraft.app.player import get_player_profile, FriendManager, PlayerBox
 from nexusdraft.app.settings import SettingsManager
+import nexusdraft.meta.metascript as metascript
 import threading
 
 try:
@@ -252,6 +253,8 @@ class MainWindow(Tk):
                         return False
         if self.draft.draft_position()[0] == "ban":
             pos = self.draft.draft_position()[1]
+            if self.settings_manager.get("allow_empty_bans") and self.ban_boxes[pos[0]][pos[1]][1].get() == "":
+                return True
             if not self.ban_boxes[pos[0]][pos[1]][1].check():
                 return False
             for j in self.get_heroes(self.draft.all_picked_positions()):
@@ -331,7 +334,10 @@ class MainWindow(Tk):
         left_picks = [self.pick_boxes[0][i[1]].get() for i in self.draft.get_picked_positions(True)]
         right_picks = [self.pick_boxes[1][i[1]].get() for i in self.draft.get_picked_positions(False)]
         bans = [self.ban_boxes[i[0]][i[1]][1].get() for i in self.draft.all_banned_positions()]
-
+        try:
+            banlist = metascript.read_role_script("banlist")["ban"]
+        except KeyError:
+            banlist = []
         if self.map_box.get() == "":
             map = None
         else:
@@ -347,7 +353,7 @@ class MainWindow(Tk):
                                     formula=formula, scale=scale)
             r2 = Score.hero_ranking(player_profile=p2_profile, map=map, friendly=left_picks, enemy=right_picks,
                                     formula=formula, scale=scale)
-            for i in left_picks + right_picks + bans:
+            for i in left_picks + right_picks + bans + banlist:
                 if i in r1:
                     r1.remove(i)
                 if i in r2:
@@ -362,7 +368,7 @@ class MainWindow(Tk):
             player = self.player_boxes[self.draft.draft_position()[1][1]].get()
             player_profile = get_player_profile(player)
             ranking = Score.hero_ranking(player_profile=player_profile, map=map, friendly=left_picks, enemy=right_picks)
-            for i in left_picks + right_picks + bans:
+            for i in left_picks + right_picks + bans + banlist:
                 if i in ranking:
                     ranking.remove(i)
             for i in ranking:

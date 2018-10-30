@@ -79,4 +79,7 @@ def get_personal_hero_table(tag, num, region=1):
             result[x[0]] = (x[2], x[4])
         else:
             result[x[0]] = (x[2], 0.0)
-    return result
+    sum = 0.0
+    for i in result:
+        sum += result[i][0]
+    return {i: (result[i][0], result[i][1], result[i][0] / sum) for i in result}

@@ -6,7 +6,6 @@ class HotSDraft:
         self.turn = -1
         self.tl_draft = tl_draft
         self.left_first = left_first
-        self.stored_bp_location = None
 
     def is_tl(self):
         """Is Team League"""
@@ -16,48 +15,44 @@ class HotSDraft:
         """The draft position of a given turn"""
         if self.tl_draft:
             if turn < 4:
-                return ["ban", [turn % 2, turn // 2]]
+                result = ["ban", [turn % 2, turn // 2]]
             elif turn == 4:
-                return ["tl_pick", turn % 2]
+                result = ["tl_pick", turn % 2]
             elif turn < 7:
-                return ["tl_pick", turn % 2, turn % 2]
+                result = ["tl_pick", turn % 2, turn % 2]
             elif turn < 9:
-                return ["ban", [(turn + 1) % 2, 2]]
+                result = ["ban", [turn % 2, 2]]
             elif turn < 11:
-                return ["tl_pick", turn % 2, turn % 2]
+                result = ["tl_pick", turn % 2, turn % 2]
             else:
-                return ["tl_pick", turn % 2]
+                result = ["tl_pick", turn % 2]
         else:
             if turn < 4:
-                return ["ban", [turn % 2, turn // 2]]
+                result = ["ban", [turn % 2, turn // 2]]
             elif turn == 4:
-                return ["pick", [0, 0]]
+                result = ["pick", [0, 0]]
             elif turn == 5:
-                return ["pick", [1, 0], [1, 1]]
+                result = ["pick", [1, 0], [1, 1]]
             elif turn == 6:
-                return ["pick", [0, 1], [0, 2]]
+                result = ["pick", [0, 1], [0, 2]]
             elif turn < 9:
-                return ["ban", [(turn) % 2, 2]]
+                result = ["ban", [turn % 2, 2]]
             elif turn == 9:
-                return ["pick", [1, 2], [1, 3]]
+                result = ["pick", [1, 2], [1, 3]]
             elif turn == 10:
-                return ["pick", [0, 3], [0, 4]]
+                result = ["pick", [0, 3], [0, 4]]
             else:
-                return ["pick", [1, 4]]
+                result = ["pick", [1, 4]]
+        if self.left_first:
+            return result
+        else:
+            return [result[0]] + [[1 - i[0], i[1]] for i in result[1:]]
 
     def draft_position(self):
         """The draft position of the current turn."""
-        if self.stored_bp_location is not None:
-            return self.stored_bp_location
         if self.turn == -1:
             return None
         l = self._pos(self.turn)
-        if not self.left_first:
-            if self.tl_draft:
-                l = [l[0]] + [1 - x for x in l[1:]]
-            else:
-                l = [l[0]] + [[1 - x[0], x[1]] for x in l[1:]]
-        self.stored_bp_location = l
         return l
 
     def side(self):
@@ -88,7 +83,6 @@ class HotSDraft:
 
     def next(self):
         """Move to the next turn and return the next draft position"""
-        self.stored_bp_location = None
         self.turn += 1
         if self.turn > 11:
             self.turn = -1

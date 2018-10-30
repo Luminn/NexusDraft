@@ -3,7 +3,7 @@ import json
 
 
 def get_full_hero_list():
-    hero_list_response = urllib.request.urlopen("https://api.hotslogs.com/Public/../data/Heroes")
+    hero_list_response = urllib.request.urlopen("https://api.hotslogs.com/Public/Data/Heroes")
     return json.loads(hero_list_response.read())
 
 
@@ -16,7 +16,7 @@ def get_hero_list():
 
 
 def get_full_map_list():
-    hero_list_response = urllib.request.urlopen("https://api.hotslogs.com/Public/../data/Maps")
+    hero_list_response = urllib.request.urlopen("https://api.hotslogs.com/Public/Data/Maps")
     return json.loads(hero_list_response.read())
 
 
