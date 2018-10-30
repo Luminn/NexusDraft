@@ -1,4 +1,4 @@
-import app.main
+import nexusdraft.app.main
 
 if __name__ == '__main__':
-    app.main.MainWindow().mainloop()
+    nexusdraft.app.main.MainWindow().mainloop()
