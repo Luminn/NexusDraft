@@ -1,6 +1,6 @@
 import nexusdraft.draft.calc as calc
 import nexusdraft.hotslogs.rawexport.countertable as ct
-import meta.metascript as metascript
+import nexusdraft.meta.metascript as metascript
 
 hero_list = {}
 main_list = {}
