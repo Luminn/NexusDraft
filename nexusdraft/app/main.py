@@ -12,8 +12,8 @@ import nexusdraft.meta.metascript as metascript
 import threading
 
 try:
-    hero_list = sorted([i[1] for i in read_hero_list("../data/hero_map.csv")])
-    map_list = sorted([i[1] for i in read_map_list("../data/hero_map.csv")])
+    hero_list = sorted([i[1] for i in read_hero_list("data/hero_map.csv")])
+    map_list = sorted([i[1] for i in read_map_list("data/hero_map.csv")])
 except FileNotFoundError:
     hero_list = []
     map_list = []

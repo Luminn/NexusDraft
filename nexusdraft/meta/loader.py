@@ -4,7 +4,7 @@ import os
 
 
 def get_meta_list():
-    files = os.listdir("../data/meta/")
+    files = os.listdir("data/meta/")
     result = []
     for i in files:
         if i.endswith(".meta"):
@@ -13,20 +13,20 @@ def get_meta_list():
 
 
 def load_meta_files(meta_name):
-    with open("../data/meta/" + meta_name + ".role", "r") as file:
+    with open("data/meta/" + meta_name + ".role", "r") as file:
         role_file = json.load(file)
-    with open("../data/meta/" + meta_name + ".meta", "r") as file:
+    with open("data/meta/" + meta_name + ".meta", "r") as file:
         meta_file = metascript.read_meta_script(file.read())
     return role_file, meta_file
 
 
 def create_empty_meta_file(meta_name, hero_list):
-    with open("../data/meta/" + meta_name + ".meta", "w"):
+    with open("data/meta/" + meta_name + ".meta", "w"):
         pass
 
 
 def create_empty_role_file(meta_name, hero_list):
-    with open("../data/meta/" + meta_name + ".role", "w") as file:
+    with open("data/meta/" + meta_name + ".role", "w") as file:
         file.write(role_file_template(hero_list))
 
 def role_file_template(hero_list):

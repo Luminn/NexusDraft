@@ -42,13 +42,13 @@ DEFAULT_SETTING = {
 class SettingsManager:
     """Manage the settings and spawn SettingsWindows."""
     def __init__(self):
-        os.system("touch ../data/settings.json")
+        os.system("touch data/settings.json")
         self.data_table = {}
         self.load_settings()
 
     def load_settings(self):
         try:
-            with open("../data/settings.json", "r") as file:
+            with open("data/settings.json", "r") as file:
                 data = json.load(file)
                 self.data_table = data
         except Exception:
@@ -56,7 +56,7 @@ class SettingsManager:
             self.save_settings()
 
     def save_settings(self):
-        with open("../data/settings.json", "w") as file:
+        with open("data/settings.json", "w") as file:
             json.dump(self.data_table, file)
 
     def get(self, item):

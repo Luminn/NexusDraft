@@ -3,7 +3,7 @@ import re
 
 
 def read_role_script(name):
-    with open("../data/meta/{}.role".format(name), "r") as file:
+    with open("data/meta/{}.role".format(name), "r") as file:
         hero_roles = json.load(file)
     roles = set()
     for i in hero_roles:
@@ -17,7 +17,7 @@ def read_role_script(name):
 
 
 def read_meta_script(name):
-    with open("../data/meta/{}.meta".format(name), "r") as file:
+    with open("data/meta/{}.meta".format(name), "r") as file:
         script = file.read()
     role_list = {}
     lines = script.split("\n")

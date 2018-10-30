@@ -14,11 +14,11 @@ meta_script = "default"
 def init():
     """Initialize the data needed to compute the hero ranking."""
     global hero_list, main_list, duo_list, counter_list, map_list
-    main_list = ct.conv_main_winrate_table(ct.read_main_table("../data/hero.csv"))
+    main_list = ct.conv_main_winrate_table(ct.read_main_table("data/hero.csv"))
     hero_list = sorted([i for i in main_list])
-    duo_list = ct.conv_matchup_winrate_table(ct.read_matchup_table("../data/duo.csv"))
-    counter_list = ct.conv_matchup_winrate_table(ct.read_matchup_table("../data/counter.csv"))
-    map_list = ct.conv_matchup_winrate_table(ct.read_matchup_table("../data/map.csv"))
+    duo_list = ct.conv_matchup_winrate_table(ct.read_matchup_table("data/duo.csv"))
+    counter_list = ct.conv_matchup_winrate_table(ct.read_matchup_table("data/counter.csv"))
+    map_list = ct.conv_matchup_winrate_table(ct.read_matchup_table("data/map.csv"))
 
 
 try:

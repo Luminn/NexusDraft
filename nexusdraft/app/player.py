@@ -27,9 +27,9 @@ def get_player_profile(player_str, region=1):
 
 def get_friends():
     """Load saved players from file friends.bin"""
-    with open("../data/friends.bin", "a"):
+    with open("data/friends.bin", "a"):
         pass
-    with open("../data/friends.bin", "rb") as file:
+    with open("data/friends.bin", "rb") as file:
         data = file.read()
         buffer = []
         for i in data:
@@ -39,7 +39,7 @@ def get_friends():
 
 def set_friends(friends):
     """Saved players to file friends.bin"""
-    with open("../data/friends.bin", "wb") as file:
+    with open("data/friends.bin", "wb") as file:
         string = ""
         buffer = []
         for i in friends:
