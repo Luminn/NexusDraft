@@ -33,9 +33,12 @@ class Slider(Frame):
 
 
 DEFAULT_SETTING = {
-    "duo_scale": 1.00, "counter_scale": 1.00, "map_scale": 1.00,
     "grade_model": "std",
-    "allow_empty_bans": False,
+    "allow_empty_bans": True,
+    "region": 1,
+    "team_league": False,
+    "meta_script": "default"
+
 }
 
 
@@ -59,11 +62,18 @@ class SettingsManager:
         with open("data/settings.json", "w") as file:
             json.dump(self.data_table, file)
 
-    def get(self, item):
-        return self.data_table[item]
+    def get(self, key):
+        try:
+            return self.data_table[key]
+        except KeyError:
+            return DEFAULT_SETTING[key]
 
     def set(self, key, value):
         self.data_table[key] = value
+
+    def set_and_save(self, key, value):
+        self.data_table[key] = value
+        self.save_settings()
 
     def setf(self, key):
         return lambda x, k=key: self.set(k, x)
@@ -90,27 +100,10 @@ class SettingsWindow(Tk):
         frame0 = Frame(main_frame)
         frame0.pack(pady=5)
 
-        frame1 = Frame(frame0)
-        frame1.pack(pady=5, side=LEFT)
-
-        Label(frame1, text="Duo Scale").grid(row=0, column=0, sticky=W)
-        Label(frame1, text="Counter Scale").grid(row=1, column=0, sticky=W)
-        Label(frame1, text="Map Scale").grid(row=2, column=0, sticky=W)
-
-        self.duo_slider = Slider(frame1, delegate=manager.setf("duo_scale"))
-        self.duo_slider.set(manager.get("duo_scale"))
-        self.duo_slider.grid(row=0, column=1)
-        self.counter_slider = Slider(frame1, delegate=manager.setf("counter_scale"))
-        self.counter_slider.set(manager.get("counter_scale"))
-        self.counter_slider.grid(row=1, column=1)
-        self.map_slider = Slider(frame1, delegate=manager.setf("map_scale"))
-        self.map_slider.set(manager.get("map_scale"))
-        self.map_slider.grid(row=2, column=1)
-
         frame2 = LabelFrame(frame0, text="Grade Model")
         frame2.pack(pady=5, side=LEFT, padx=10)
 
-        grade_strings = [("std", "Standard"), ("uni", "Uniform"), ("exp", "Experience")]
+        grade_strings = [("std", "Standard"), ("exp", "Player Experience"), ("wr", "Win Rate"), ("uni", "Counter Only")]
 
         self.grade_model = StringVar(self, value=self.manager.get("grade_model"))
         buttons = [Radiobutton(frame2, variable=self.grade_model, value=i, text=j,

@@ -12,37 +12,22 @@ class HotSDraft:
         return self.tl_draft
 
     def _pos(self, turn):
-        """The draft position of a given turn"""
-        if self.tl_draft:
-            if turn < 4:
-                result = ["ban", [turn % 2, turn // 2]]
-            elif turn == 4:
-                result = ["tl_pick", turn % 2]
-            elif turn < 7:
-                result = ["tl_pick", turn % 2, turn % 2]
-            elif turn < 9:
-                result = ["ban", [turn % 2, 2]]
-            elif turn < 11:
-                result = ["tl_pick", turn % 2, turn % 2]
-            else:
-                result = ["tl_pick", turn % 2]
+        if turn < 4:
+            result = ["ban", [turn % 2, turn // 2]]
+        elif turn == 4:
+            result = ["pick", [0, 0]]
+        elif turn == 5:
+            result = ["pick", [1, 0], [1, 1]]
+        elif turn == 6:
+            result = ["pick", [0, 1], [0, 2]]
+        elif turn < 9:
+            result = ["ban", [turn % 2, 2]]
+        elif turn == 9:
+            result = ["pick", [1, 2], [1, 3]]
+        elif turn == 10:
+            result = ["pick", [0, 3], [0, 4]]
         else:
-            if turn < 4:
-                result = ["ban", [turn % 2, turn // 2]]
-            elif turn == 4:
-                result = ["pick", [0, 0]]
-            elif turn == 5:
-                result = ["pick", [1, 0], [1, 1]]
-            elif turn == 6:
-                result = ["pick", [0, 1], [0, 2]]
-            elif turn < 9:
-                result = ["ban", [turn % 2, 2]]
-            elif turn == 9:
-                result = ["pick", [1, 2], [1, 3]]
-            elif turn == 10:
-                result = ["pick", [0, 3], [0, 4]]
-            else:
-                result = ["pick", [1, 4]]
+            result = ["pick", [1, 4]]
         if self.left_first:
             return result
         else:

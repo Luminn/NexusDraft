@@ -14,27 +14,42 @@ def scale_winrate(winrate, scale):
 
 def hero_power(pickrate, winrate, num_heroes):
     """Determine a hero's power level based on global pick rate and win rate"""
-    return winrate * winrate * 2 * exp_squash(pickrate, 1, 1 / num_heroes) * 1.5
-
+    return combine(winrate, pickrate * 2 + 0.45)
 
 def combine(wr1, wr2):
     """Combine two close to 50% win rate by multiplying them"""
     return wr1 * wr2 * 2
 
 
-def counter_score(winrate_1, winrate_2, real_winrate):
+def counter_score(winrate_1, winrate_2, real_winrate, scaler=1):
+    """Find the level of counter by comparing win rates"""
+    try:
+        score = real_winrate / combine(winrate_1, 1 - winrate_2)
+        return (score - 1) * scaler + 1
+    except ZeroDivisionError:
+        return 0
+
+
+def legacy_counter_score(winrate_1, winrate_2, real_winrate):
     """Find the level of counter by comparing win rates"""
     return real_winrate - combine(winrate_1, 1 - winrate_2)
 
 
-def duo_score(winrate_1, winrate_2, real_winrate):
+def duo_score(winrate_1, winrate_2, real_winrate, scaler=1):
     """ Find the level of synergy by comparing win rates """
-    return real_winrate - combine(winrate_1, winrate_2)
+    try:
+        score = real_winrate / combine(winrate_1, winrate_2)
+        return (score - 1) * scaler + 1
+    except ZeroDivisionError:
+        return 0
 
 
 def map_score(winrate, map_winrate):
     """Find the power level of a hero on a certain map by comparing win rates """
-    return map_winrate - winrate
+    try:
+        return map_winrate / winrate
+    except ZeroDivisionError:
+        return 0
 
 
 def personal_power(picks, pickrate, winrate):
@@ -45,9 +60,9 @@ def personal_power(picks, pickrate, winrate):
     return pow
 
 
-def personal_experience(picks, pickrate, winrate):
+def personal_experience(picks, pickrate):
     """Determine a player's hero proficiency based only on pick rate """
-    return exp_squash(winrate, 1, 0.4) * max(exp_squash(picks, 1, 50), exp_squash(pickrate, 1, 0.05))
+    return max(exp_squash(picks, 0.5, 50), exp_squash(pickrate, 0.5, 0.05))
 
 
 def counter_score_scaler(pickrate):

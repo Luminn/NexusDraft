@@ -1,5 +1,8 @@
+
+# basic implementation of the QM rule.
+
 import default
 tank > 1
 ranged > 0
 ranged < 3
-healer = 1
+healer > 1

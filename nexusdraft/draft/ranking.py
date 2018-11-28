@@ -27,48 +27,60 @@ except FileNotFoundError:
     pass
 
 
-def hero_ranking(player_profile=None, map=None, friendly=None, enemy=None, formula="std", scale=(1, 1, 1)):
+def hero_ranking(player_profile=None, map=None, friendly=None, enemy=None, formula="std"):
     """Rank the heroes from most viable to least viable."""
     profile = {i: 0 for i in hero_list}
     if formula == "uni":
         for i in hero_list:
             profile[i] = 0.5
     elif player_profile is None:
-        for i in hero_list:
-            profile[i] = calc.hero_power(main_list[i][0], main_list[i][1], len(hero_list))
+        if formula == "wr":
+            for i in hero_list:
+                profile[i] = main_list[i][1]
+        else:
+            for i in hero_list:
+                profile[i] = calc.hero_power(main_list[i][0], main_list[i][1], len(hero_list))
     else:
         if formula == "exp":
             for i in player_profile:
-                profile[i] = calc.personal_experience(player_profile[i][0],  player_profile[i][2], player_profile[i][1])
+                profile[i] = calc.personal_experience(player_profile[i][0],  player_profile[i][2])
+        elif formula == "wr":
+            for i in player_profile:
+                profile[i] = player_profile[i][0]
         else:
             for i in player_profile:
                 profile[i] = calc.personal_power(player_profile[i][0],  player_profile[i][2], player_profile[i][1])
+    #o_profile = {i : profile[i] for i in profile}
+
+    # calculate map score
     if map is not None and map != "":
         for i in hero_list:
-            profile[i] += calc.map_score(main_list[i][1], map_list[i][map][0]) * scale[2]
+            profile[i] *= calc.map_score(main_list[i][1], map_list[i][map][1])
 
     # compute duo and counter score with friendly and enemy heroes
     for i in hero_list:
-        interaction_score = 0
+        interaction_score = 1
         if friendly is not None:
             for j in friendly:
                 if j in hero_list:
-                    interaction_score += calc.duo_score(main_list[i][1], main_list[j][1], duo_list[i][j][1]) \
-                                          * calc.counter_score_scaler(main_list[j][0]) * scale[0]
+                    profile[i] *= calc.duo_score(main_list[i][1], main_list[j][1], duo_list[i][j][1],
+                                                 calc.counter_score_scaler(main_list[i][0]) * calc.counter_score_scaler(main_list[j][0]))
+
         if enemy is not None:
             for j in enemy:
                 if j in hero_list:
-                    interaction_score += calc.counter_score(main_list[i][1], main_list[j][1], counter_list[i][j][1])\
-                                         * calc.counter_score_scaler(main_list[j][0]) * scale[1]
-        profile[i] += interaction_score * calc.counter_score_scaler(main_list[i][0]) * 3
+                    profile[i] *= calc.counter_score(main_list[i][1], main_list[j][1], counter_list[i][j][1],
+                                                            calc.counter_score_scaler(main_list[i][0]) * calc.counter_score_scaler(main_list[j][0]))
 
     # compute counterability of heroes
-    for i in hero_list:
-        profile[i] -= counterability(i) * (5 - len(enemy)) * 0.004
+    if formula != "uni":
+        for i in hero_list:
+            profile[i] -= counterability(i) * (5 - len(enemy)) * 0.001
 
     # apply metascript filters
-    for i in metascript.accepted_hero_list(meta_script, friendly, hero_list, map):
-        profile[i] *= 100
+    if formula != "uni":
+        for i in metascript.accepted_hero_list(meta_script, friendly, hero_list, map):
+            profile[i] *= 100
 
     # delete friendly and enemy heroes from the suggestion list
     if friendly is not None:
@@ -78,6 +90,7 @@ def hero_ranking(player_profile=None, map=None, friendly=None, enemy=None, formu
         for i in enemy:
             profile.__delitem__(i) if i in profile else None
     return [i[0] for i in sorted([(i, profile[i]) for i in profile], key=lambda x: x[1], reverse=True)]
+    #return ["{} {:.02f}".format(i[0], o_profile[i[0]]) for i in sorted([(i, profile[i]) for i in profile], key=lambda x: x[1], reverse=True)]
 
 
 def counterability(hero):
@@ -85,6 +98,6 @@ def counterability(hero):
     threshold = 0.028 / calc.counter_score_scaler(main_list[hero][0])
     sum = 0
     for i in hero_list:
-        cs = calc.counter_score(main_list[i][1], main_list[hero][1], counter_list[i][hero][1]) * calc.counter_score_scaler(main_list[i][0])
+        cs = calc.legacy_counter_score(main_list[i][1], main_list[hero][1], counter_list[i][hero][1]) * calc.counter_score_scaler(main_list[i][0])
         sum += 1 if cs > threshold else 0
     return sum

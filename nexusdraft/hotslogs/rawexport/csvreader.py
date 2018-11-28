@@ -91,8 +91,6 @@ def read_teams(file_name, hero_list, exit_count=-1):
         if len(temp_team[0]) > 4 and len(temp_team[1]) > 4:
             teams.append(temp_team)
             temp_team = [], []
-            if len(temp_team[0]) > 5 and len(temp_team[1]) > 5:
-                raise Exception
         if exit_count == 0:
             break
     csv_file.close()

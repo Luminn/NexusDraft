@@ -19,12 +19,7 @@ class CounterTableGenerator:
         self.counter_picks = {i: {j: [0, 0] for j in self.hero_list} for i in self.hero_list}
         self.duo_picks = {i: {j: [0, 0] for j in self.hero_list} for i in self.hero_list}
 
-    def clear_counter_lists(self):
-        winrate_list = {i: [0, 0] for i in self.hero_list}
-        map_picks = {i: {j: [0, 0] for j in self.map_list} for i in self.hero_list}
-        counter_picks = {i: {j: [0, 0] for j in self.hero_list} for i in self.hero_list}
-
-    def generate_counter_lists(self, gamemode_filter=(4, 5, 6), mmr_floor=0, mmr_ceiling=0):
+    def generate_counter_lists(self, gamemode_filter=(4, 5, 6)):
         self._init()
         chara_csv_file = open("data/ReplayCharacters.csv", "r")
         replay_csv_file = open("data/Replays.csv", "r")

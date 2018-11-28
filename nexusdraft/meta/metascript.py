@@ -49,6 +49,8 @@ def read_meta_script(name):
                 if i[3:].lstrip().startswith("not"):
                     maps = ["NOT"] + maps
                 continue
+            elif i.startswith("#"):
+                continue
             elif not i.startswith("  "):
                 maps = None
             i = i.strip()
@@ -71,10 +73,6 @@ def read_meta_script(name):
             role = i[0:k].strip()
             value = int(i[k+1:].strip())
             result.append((role, sign, value, maps, enforce))
-    #except ValueError:
-    #    return None
-    #except IndexError:
-    #    return None
     except ArithmeticError:
         return None
     return role_list, result
@@ -86,7 +84,7 @@ def accepted_hero_list(name, picks, hero_list, map=None):
     for i in hero_list:
         accepted = True
         for role, sign, value, maps, _ in script:
-            if map is not None:
+            if map is not None and maps is not None:
                 if maps[0] == "NOT" and map in maps:
                     pass
                 elif map not in maps:

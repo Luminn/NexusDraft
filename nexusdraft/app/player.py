@@ -3,6 +3,8 @@ from tkinter import *
 from tkinter.ttk import *
 import tkinter.font as tkFont
 from nexusdraft.hotslogs.crawler import get_personal_hero_table
+import nexusdraft.app.cache as cache
+
 
 def process_player_str(player_str):
     """Get the Battle Tag, number and Role from a player string"""
@@ -21,7 +23,7 @@ def get_player_profile(player_str, region=1):
     if player_str == "":
         return None
     tag, num, _ = process_player_str(player_str)
-    profile = get_personal_hero_table(tag, num, region)
+    profile = cache.get_data_or_save("{}#{}#{}".format(tag, num, region), lambda: get_personal_hero_table(tag, num, region))
     return profile
 
 
